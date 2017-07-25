@@ -11,11 +11,15 @@ from bootcamp.activities import views as activities_views
 from bootcamp.search import views as search_views
 from bootcamp.leaderboard.views import LeaderboardView
 from bootcamp.hackIDE.views import index, runCode, hackide
+from django.conf.urls import patterns
+from django.contrib import admin
+
+#url(r'^$', core_views.home, name='home')
 
 urlpatterns = [
     url(r'^$', core_views.home, name='home'),
-    url(r'^login', auth_views.login, {'template_name': 'core/cover.html'},
-        name='login'),
+    url(r'^reset', bootcamp_auth_views.reset_password, name='reset'),
+    url(r'^login', auth_views.login, {'template_name': 'core/cover.html'},name='login'),
     url(r'^logout', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^signup/$', bootcamp_auth_views.signup, name='signup'),
     url(r'^settings/$', core_views.settings, name='settings'),
@@ -40,11 +44,13 @@ urlpatterns = [
     url(r'^(?P<username>[^/]+)/$', core_views.profile, name='profile'),
     url(r'^i18n/', include('django.conf.urls.i18n', namespace='i18n')),
     url(r'^leaderboard$', LeaderboardView.as_view(), name='leaderboard'),
-    url(r'^/hackIDE/$', index, name='hackIDE'),
-    url(r'^run$', runCode.as_view(), name='run'),
-    url(r'^code/(?P<code_id>[^/]+)/$', hackide, name='code'),
-]
+    url(r'^hackIDE$', index, name='hackIDE'),
+    url(r'^run$', runCode.as_view(), name='runCode'),
+    url(r'^code/(?P<code_id>[^/]+)/$', hackide, name='code')
+    ]
+
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    document_root=settings.MEDIA_ROOT)

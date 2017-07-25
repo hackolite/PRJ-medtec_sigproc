@@ -96,3 +96,31 @@ class SignUpForm(forms.ModelForm):
             self._errors['password'] = self.error_class(
                 ['Passwords don\'t match'])
         return self.cleaned_data
+
+
+
+
+
+class ResetForm(forms.ModelForm):
+
+    email = forms.CharField(
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        required=True,
+        max_length=75,
+        help_text='Email')
+
+    class Meta:
+        model = User
+        exclude = ['last_login', 'date_joined']
+        fields = ['email', ]
+
+    def __init__(self, *args, **kwargs):
+        super(ResetForm, self).__init__(*args, **kwargs)
+        #self.fields['email'].validators.append(UniqueEmailValidator)
+        self.fields['email'].validators.append(SignupDomainValidator)
+        self.email = self.fields['email']
+
+    def clean(self):
+        super(ResetForm, self).clean()
+        password = self.cleaned_data.get('email')
+        return self.cleaned_data
